@@ -33,7 +33,7 @@
                 <div class="card-block" #contentdiv>
                     <h4 class="card-title">{{this.stepnumber + 1}}. {{ step.title | atob }}</h4>
                     <div class="card-text">
-                        <dynamic-html [content]="stepcontent | markdown"></dynamic-html>
+                        <ngx-dynamic-hooks [content]="stepcontent | markdown"></ngx-dynamic-hooks>
                     </div>
                 </div>
 

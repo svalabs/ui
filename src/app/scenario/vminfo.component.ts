@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { OnMount } from '../dynamic-html';
+import { Component, Input } from '@angular/core';
+import { OnDynamicMount } from 'ngx-dynamic-hooks';
 import { VM } from '../VM';
 import { delay, retryWhen, switchMap, concatMap, filter } from 'rxjs/operators';
 import { SessionService } from '../services/session.service';
@@ -19,11 +19,12 @@ import { VMInfoConfig } from '../VMInfoConfig';
     <a *ngIf="config.mode == 'link'" [href]="code">{{code}}<ng-container>
     `,
 })
-export class VMInfoComponent implements OnMount {
+export class VMInfoComponent implements OnDynamicMount {
+    @Input() public id: string = "";
+    
     public name: string = "";
     public info: string = "";
     public ss: string = "";
-    public id: string = "";
     public config: VMInfoConfig = new VMInfoConfig();
 
     public code: string = "";
@@ -38,9 +39,7 @@ export class VMInfoComponent implements OnMount {
     ) {
     }
 
-    public dynamicOnMount(attrs?: Map<string, string>, content?: string, element?: Element) {
-        this.id = attrs.get("id");
-
+    public onDynamicMount() {
         this.vmInfoService.getConfigStream()
             .pipe(
                 filter((v: VMInfoConfig) => {

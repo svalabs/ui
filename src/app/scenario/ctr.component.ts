@@ -1,6 +1,6 @@
-import {  Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { OnDynamicMount } from 'ngx-dynamic-hooks';
 import { CtrService } from './ctr.service';
-import { OnMount } from '../dynamic-html';
 
 @Component({
     selector: 'ctr',
@@ -10,8 +10,8 @@ import { OnMount } from '../dynamic-html';
     `,
     styleUrls: ['ctr.component.scss']
 })
-export class CtrComponent implements OnMount {
-    public id: string = "";
+export class CtrComponent implements OnDynamicMount {
+    @Input('ctrid') public id: string = "";
 
     public code: string = "";
     public target: string = "";
@@ -23,8 +23,7 @@ export class CtrComponent implements OnMount {
     ) {
     }
 
-    public dynamicOnMount(attrs?: Map<string, string>, content?: string, element?: Element) {
-        this.id = attrs.get("ctrid");
+    public onDynamicMount() {
         this.code = this.ctrService.getCode(this.id);
         this.target = this.ctrService.getTarget(this.id);
         this.count = this.ctrService.getCount(this.id);

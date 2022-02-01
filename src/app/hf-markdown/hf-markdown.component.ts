@@ -63,7 +63,7 @@ export class HfMarkdownComponent implements OnChanges {
         name="${name}"
         info="${info}"
         mode="${mode}"
-        template="${code}"
+        template=${JSON.stringify(code)}
       ></vminfo>`;
     },
 

@@ -52,7 +52,7 @@ export class HfMarkdownComponent implements OnChanges {
       const count = Number(countStr);
       return `<ctr
         target="${target}"
-        code="${code}"
+        code=${JSON.stringify(code)}
         ${isNaN(count) ? '' :  `[count]="${count}"`}
       ></ctr>`;
     },
@@ -142,12 +142,7 @@ export class HfMarkdownComponent implements OnChanges {
     return content.replace(
         /\$\{vminfo:([^:]*):([^}]*)\}/g,
         (match, vmName, propName) =>
-        `<vminfo
-          [vms]="context.vmInfo"
-          name="${vmName}"
-          info="${propName}"
-          mode="inline"
-        ></vminfo>`,
+          this.context.vmInfo?.[vmName]?.[propName] ?? match
     );
   }
 }

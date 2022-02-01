@@ -52,7 +52,7 @@ export class HfMarkdownComponent implements OnChanges {
       const count = Number(countStr);
       return `<ctr
         target="${target}"
-        code="${code}"
+        code=${JSON.stringify(code)}
         ${isNaN(count) ? '' :  `[count]="${count}"`}
       ></ctr>`;
     },

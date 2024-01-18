@@ -22,7 +22,7 @@ import {
   catchError,
   repeat,
 } from 'rxjs/operators';
-import { TerminalComponent } from './terminal.component';
+import { TerminalComponent, TerminalData } from './terminal.component';
 import { ClrTabContent, ClrTab, ClrModal } from '@clr/angular';
 import { ServerResponse } from '../ServerResponse';
 import { Scenario } from './Scenario';
@@ -44,6 +44,8 @@ import { ProgressService } from '../services/progress.service';
 import { HfMarkdownRenderContext } from '../hf-markdown/hf-markdown.component';
 import { GuacTerminalComponent } from './guacTerminal.component';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { PopoutService } from './portal_test/popout.service';
+import { PopoutModalName } from './portal_test/popout.tokens';
 
 type Service = {
   name: string;
@@ -122,6 +124,7 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
     private shellService: ShellService,
     private progressService: ProgressService,
     private jwtHelper: JwtHelperService,
+    private popoutService: PopoutService,
   ) {}
 
   setTabActive(webinterface: Service, vmName: string) {
@@ -492,5 +495,22 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 10);
       }
     }
+  }
+
+  openTerminalPopout(vmId: string, vmName: string, endpoint: string) {
+    const modalData = this.popoutService.createInjectionData<TerminalData>(
+      PopoutModalName.shell,
+      'Shell Modal',
+      {
+        vmId: vmId,
+        vmName: vmName,
+        endpoint: endpoint,
+      },
+    );
+    this.popoutService.openOrFocusModal(
+      TerminalComponent,
+      modalData,
+      (component) => component.name === 'Shell Modal',
+    );
   }
 }

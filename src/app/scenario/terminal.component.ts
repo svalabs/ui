@@ -7,6 +7,8 @@ import {
   ViewEncapsulation,
   AfterViewInit,
   OnDestroy,
+  Optional,
+  Inject,
 } from '@angular/core';
 import { Terminal } from 'xterm';
 import { AttachAddon } from 'xterm-addon-attach';
@@ -21,8 +23,15 @@ import { interval, Subscription, timer } from 'rxjs';
 import { themes } from './terminal-themes/themes';
 import { SettingsService } from '../services/settings.service';
 import { CanvasAddon } from 'xterm-addon-canvas';
+import { POPOUT_MODAL_DATA, PopoutData } from './portal_test/popout.tokens';
 
 const WS_CODE_NORMAL_CLOSURE = 1000;
+
+export interface TerminalData {
+  vmId: string;
+  vmName: string;
+  endpoint: string;
+}
 
 @Component({
   selector: 'app-terminal',
@@ -53,6 +62,8 @@ export class TerminalComponent implements OnChanges, AfterViewInit, OnDestroy {
   private DEFAULT_FONT_SIZE = 16;
   private DEFAULT_TERMINAL_THEME = 'default';
 
+  newTab = false;
+
   @ViewChild('terminal', { static: true }) terminalDiv: ElementRef;
 
   constructor(
@@ -60,7 +71,16 @@ export class TerminalComponent implements OnChanges, AfterViewInit, OnDestroy {
     private ctrService: CtrService,
     private shellService: ShellService,
     private settingsService: SettingsService,
-  ) {}
+    @Optional() @Inject(POPOUT_MODAL_DATA) data: PopoutData,
+  ) {
+    if (data) {
+      const terminalData = data.payload as TerminalData;
+      this.vmid = terminalData.vmId;
+      this.vmname = terminalData.vmName;
+      this.endpoint = terminalData.endpoint;
+      this.newTab = true;
+    }
+  }
 
   @HostListener('window:resize')
   public resize() {
@@ -190,6 +210,10 @@ export class TerminalComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    if (this.newTab) {
+      this.buildSocket();
+    }
+
     // Options for the observer (which mutations to observe)
     const config: MutationObserverInit = {
       attributes: true,

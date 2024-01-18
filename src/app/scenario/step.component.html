@@ -97,6 +97,21 @@
                   <td><b>Private IP:</b> {{ v.value.private_ip }}</td>
                   <td><b>Hostname:</b> {{ v.value.hostname }}</td>
                   <td><b>Shell Status:</b> {{ getShellStatus(v.key) }}</td>
+                  <td>
+                    <b>Open in new Tab</b>
+                    <button
+                      class="btn btn-sm"
+                      (click)="
+                        openTerminalPopout(
+                          v.value.id,
+                          v.key,
+                          v.value.ws_endpoint
+                        )
+                      "
+                    >
+                      Test open in new Tab!
+                    </button>
+                  </td>
                 </tr>
               </table>
               <app-terminal

@@ -9,6 +9,7 @@ import { AuthGuard } from './auth.guard';
 import { StepComponent } from './scenario/step.component';
 import { PrintableComponent } from './printable/printable.component';
 import { GuacTerminalComponent } from './scenario/guacTerminal.component';
+import { TerminalPortalComponent } from './terminal-portal/terminal-portal.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/app/home', pathMatch: 'full' },
@@ -45,6 +46,7 @@ const routes: Routes = [
     component: PrintableComponent,
     canActivate: [AuthGuard],
   },
+  { path: 'terminalportal', component: TerminalPortalComponent },
   { path: '**', redirectTo: '/app/home' },
 ];
 

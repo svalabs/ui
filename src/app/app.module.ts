@@ -69,6 +69,7 @@ import {
   eyeHideIcon,
   clockIcon,
 } from '@cds/core/icon';
+import { TerminalPortalComponent } from './terminal-portal/terminal-portal.component';
 
 ClarityIcons.addIcons(
   layersIcon,
@@ -137,6 +138,7 @@ export function jwtOptionsFactory() {
     HfMarkdownComponent,
     PrintableComponent,
     IdeWindowComponent,
+    TerminalPortalComponent,
   ],
   imports: [
     BrowserModule,

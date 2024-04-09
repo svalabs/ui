@@ -48,6 +48,7 @@ import { SplitComponent } from 'angular-split';
 import { SettingsService } from '../services/settings.service';
 import { Course } from '../course/course';
 import { CourseService } from '../services/course.service';
+import { DomPortal } from '@angular/cdk/portal';
 
 type Service = {
   name: string;
@@ -96,6 +97,7 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
   private activeWebinterface: Service;
 
   public pauseOpen = false;
+  terminalPortalDom: DomPortal<any>;
 
   public pauseLastUpdated: Date = new Date();
   public pauseRemainingString = '';
@@ -326,6 +328,7 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
       tabs.first.tabLink.activate();
     });
     setTimeout(() => this.calculateMaxInterfaceTabs(), 2000);
+    this.terminalPortalDom = new DomPortal(this.terms);
   }
 
   ngOnDestroy() {
@@ -465,6 +468,14 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.calculateMaxInterfaceTabs();
+  }
+
+  terminalPortal() {
+    window.open(
+      'http://localhost:4200/terminalportal',
+      '_blank',
+      'width=600,height=400',
+    );
   }
 
   openWebinterfaceInNewTab(vm: stepVM, wi: Service) {

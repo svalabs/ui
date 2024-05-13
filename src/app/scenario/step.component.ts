@@ -231,6 +231,7 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
         toArray(),
         tap((entries: (readonly [string, VM])[]) => {
           this.vms = new Map(entries);
+          console.log(this.vms); // TO DO delete later this line
           this.sendProgressUpdate();
           const vmInfo: HfMarkdownRenderContext['vmInfo'] = {};
           for (const [k, v] of this.vms) {
@@ -263,6 +264,8 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
                         ? vm.webinterfaces.push(webinterface)
                         : (vm.webinterfaces = [webinterface]);
                     }
+                    console.log(vm.webinterfaces); // TO DO delete later this line
+
                   });
                   return vm;
                 }),
@@ -470,9 +473,9 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calculateMaxInterfaceTabs();
   }
 
-  terminalPortal() {
+  terminalPortal(parameterVMName: string, parameterVMId: string) {
     window.open(
-      'http://localhost:4200/terminalportal',
+      location.origin + '/terminalportal/vmName/' + parameterVMName+'/vmId/' + parameterVMId,
       '_blank',
       'width=600,height=400',
     );

@@ -1,1 +1,7 @@
-<div class="terminal-div" #terminal></div>
+<div
+  [ngClass]="{
+    'terminal-div': DisplayOnPortal === false,
+    'terminal-portal-div': DisplayOnPortal === true
+  }"
+  #terminal
+></div>

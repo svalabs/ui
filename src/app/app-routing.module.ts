@@ -46,7 +46,7 @@ const routes: Routes = [
     component: PrintableComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'terminalportal', component: TerminalPortalComponent },
+  { path: 'terminalportal/vmName/:vmName/vmId/:vmId', component: TerminalPortalComponent },
   { path: '**', redirectTo: '/app/home' },
 ];
 

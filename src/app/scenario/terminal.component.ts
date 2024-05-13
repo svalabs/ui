@@ -40,6 +40,9 @@ export class TerminalComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input()
   endpoint: string;
 
+  @Input()
+  DisplayOnPortal?: boolean = false; 
+
   private term: Terminal;
   private fitAddon: FitAddon = new FitAddon();
   private attachAddon: AttachAddon;

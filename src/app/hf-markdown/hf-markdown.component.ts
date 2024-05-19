@@ -104,6 +104,19 @@ export class HfMarkdownComponent implements OnChanges {
       `;
     },
 
+    quiz(code: string, quizTitle: string, allowedAttempts?: string) {
+      const tempAtts = Number(allowedAttempts);
+      const allowedAtts = isNaN(tempAtts) || tempAtts < 1 ? 1 : tempAtts;
+      return `
+      <quiz
+        quizTitle="${quizTitle}"
+        questionsRaw="${code}"
+        [allowedAtts]="${allowedAtts}"
+      >
+      </quiz>
+      `;
+    },
+
     note(code: string, type: string, message: string) {
       return `
         <div class="note ${type}">
@@ -132,7 +145,15 @@ ${token}`;
         ctrId="${id}"
         filename="${filepath}"
         title="Click to create ${filepath} on ${target}"
-      >${this.renderHighlightedCode(code, language, filename)}</ctr>`;
+      >${this.renderHighlightedCode(code, language, filename, false)}</ctr>`;
+    },
+
+    verifyTask(code: string, target: string, taskName: string) {
+      return `<app-single-task-verification-markdown
+        target="${target}" 
+        message="${code}" 
+        taskName="${taskName}"
+        ></app-single-task-verification-markdown>`;
     },
 
     mermaid(code: string) {
@@ -149,10 +170,17 @@ ${token}`;
     code: string,
     language: string,
     fileName?: string,
+    copyCode: boolean = true,
   ) {
+    let copyCodeDiv = '';
+    if (copyCode) {
+      const id = this.ctrService.registerCode(code);
+      copyCodeDiv = `<app-copy-to-clipboard ctrId='${id}'></app-copy-to-clipboard>`;
+    }
+
     const fileNameTag = fileName
-      ? `<p class="filename" (click)=createFile(code,node)>${fileName}</p>`
-      : `<p class="language">${language}</p>`;
+      ? `<p class="filename">${fileName} ${copyCodeDiv}</p>`
+      : `<p class="language">${language} ${copyCodeDiv}</p>`;
     const classAttr = `language-${language}`;
 
     if (Prism.languages[language]) {

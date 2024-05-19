@@ -33,12 +33,21 @@ import { environment } from 'src/environments/environment';
 import { AppConfigService } from './app-config.service';
 import { AngularSplitModule } from 'angular-split';
 import { HfMarkdownComponent } from './hf-markdown/hf-markdown.component';
+import { CopyToClipboardComponent } from './hf-markdown/copy-to-clipboard/copy-to-clipboard.component';
 import { PrintableComponent } from './printable/printable.component';
 import { GargantuaClientFactory } from './services/gargantua.service';
+import { QuizCheckboxComponent } from './quiz/quiz-checkbox.component';
+import { QuizRadioComponent } from './quiz/quiz-radio.component';
+import { QuizBodyComponent } from './quiz/quiz-body.component';
+import { QuizComponent } from './quiz/quiz.component';
 import { GuacTerminalComponent } from './scenario/guacTerminal.component';
 import { IdeWindowComponent } from './scenario/ideWindow.component';
 import { ContextService } from './services/context.service';
 import { TypedSettingsService } from './services/typedSettings.service';
+import { VerificationService } from './services/verification.service';
+import { TaskProgressComponent } from './scenario/task-progress/task-progress.component';
+import { TaskModalComponent } from './scenario/task-modal/task-modal.component';
+import { SingleTaskVerificationMarkdownComponent } from './hf-markdown/single-task-verification-markdown/single-task-verification-markdown.component';
 import '@cds/core/icon/register.js';
 import {
   ClarityIcons,
@@ -65,10 +74,13 @@ import {
   windowCloseIcon,
   arrowIcon,
   hostIcon,
+  syncIcon,
   eyeIcon,
   eyeHideIcon,
   clockIcon,
+  copyIcon,
 } from '@cds/core/icon';
+import { QuizLabelComponent } from './quiz/quiz-label.component';
 import { TerminalPortalComponent } from './terminal-portal/terminal-portal.component';
 
 ClarityIcons.addIcons(
@@ -95,9 +107,11 @@ ClarityIcons.addIcons(
   windowCloseIcon,
   arrowIcon,
   hostIcon,
+  syncIcon,
   eyeIcon,
   eyeHideIcon,
   clockIcon,
+  copyIcon,
 );
 
 export function tokenGetter() {
@@ -110,10 +124,21 @@ const appInitializerFn = (appConfig: AppConfigService) => {
   };
 };
 
+export const jwtAllowedDomains = [
+  environment.server.replace(/(^\w+:|^)\/\//, ''),
+];
+
+export function addJwtAllowedDomain(domain: string) {
+  const newDomain = domain.replace(/(^\w+:|^)\/\//, '');
+  if (!jwtAllowedDomains.includes(newDomain)) {
+    jwtAllowedDomains.push(newDomain);
+  }
+}
+
 export function jwtOptionsFactory() {
   return {
     tokenGetter: tokenGetter,
-    allowedDomains: [environment.server.replace(/(^\w+:|^)\/\//, '')],
+    allowedDomains: jwtAllowedDomains,
     disallowedRoutes: [
       environment.server.replace(/(^\w+:|^)\/\//, '') + '/auth/authenticate',
     ],
@@ -133,11 +158,20 @@ export function jwtOptionsFactory() {
     ScenarioCardComponent,
     StepComponent,
     CtrComponent,
+    QuizCheckboxComponent,
+    QuizRadioComponent,
+    QuizBodyComponent,
+    QuizComponent,
+    QuizLabelComponent,
     VMClaimComponent,
     AtobPipe,
     HfMarkdownComponent,
+    CopyToClipboardComponent,
     PrintableComponent,
     IdeWindowComponent,
+    TaskProgressComponent,
+    TaskModalComponent,
+    SingleTaskVerificationMarkdownComponent,
     TerminalPortalComponent,
   ],
   imports: [
@@ -157,7 +191,12 @@ export function jwtOptionsFactory() {
         sanitize: false,
         convertHTMLEntities: false,
       },
-      globalParsers: [{ component: CtrComponent }],
+      globalParsers: [
+        { component: CtrComponent },
+        { component: SingleTaskVerificationMarkdownComponent },
+        { component: QuizComponent },
+        { component: CopyToClipboardComponent },
+      ],
     }),
     JwtModule.forRoot({
       jwtOptionsProvider: {
@@ -182,6 +221,7 @@ export function jwtOptionsFactory() {
     ProgressService,
     ContextService,
     TypedSettingsService,
+    VerificationService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFn,

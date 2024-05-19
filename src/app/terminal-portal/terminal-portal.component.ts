@@ -1,8 +1,7 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { TerminalComponent } from '../scenario/terminal.component';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VMService } from '../services/vm.service';
-import { atou } from '../unicode';
+import { VM } from '../VM';
 
 @Component({
   selector: 'app-terminal-portal',
@@ -11,20 +10,16 @@ import { atou } from '../unicode';
 })
 export class TerminalPortalComponent implements OnInit {
   constructor(private route: Router, private vmService: VMService) {}
-  @ViewChildren('terminalPortal')
-  private terminalPortal: QueryList<TerminalComponent> = new QueryList();
-
-  // vmName: string;
 
   vmName = this.route.url.split('/')[3];
   vmId = this.route.url.split('/')[5];
-  endpoint = this.vmService.getWebinterfaces(this.vmId).subscribe((res) => {
-    const stringContent: string = atou(res.content);
-    console.log(stringContent);
-  });
-
+  endpoint = '';
+  display = false;
 
   ngOnInit(): void {
-    console.log(this.route.url); // TO DO make directory
+    this.vmService.get(this.vmId, true).subscribe((vm: VM) => {
+      this.endpoint = vm.ws_endpoint;
+      this.display = true;
+    });
   }
 }

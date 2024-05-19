@@ -29,6 +29,7 @@
     "@clr/ui": "^15.10.0",
     "@webcomponents/custom-elements": "^1.0.0",
     "@webcomponents/webcomponentsjs": "^2.0.0",
+    "@xterm/addon-fit": "^0.10.0",
     "angular-split": "^13.2.0",
     "guacamole-common-js": "^1.4.0-a",
     "marked": "^4.3.0",

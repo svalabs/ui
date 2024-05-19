@@ -134,7 +134,7 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
     private progressService: ProgressService,
     private jwtHelper: JwtHelperService,
     private settingsService: SettingsService,
-  ) {}
+      ) {}
 
   setTabActive(webinterface: Service, vmName: string) {
     // Find our Webinterface and set it active, save currently active webinterface to set it unactive on change without having to iterate through all of them again.
@@ -480,6 +480,8 @@ export class StepComponent implements OnInit, AfterViewInit, OnDestroy {
       'width=600,height=400',
     );
   }
+
+
 
   openWebinterfaceInNewTab(vm: stepVM, wi: Service) {
     // we always load our token synchronously from local storage

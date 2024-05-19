@@ -78,7 +78,7 @@ export class TerminalComponent implements OnChanges, AfterViewInit, OnDestroy {
       const height = this.dimensions.rows;
       const width = this.dimensions.cols;
       this.socket.send(`\u001b[8;${height};${width}t`);
-      this.fitAddon.fit();
+            this.fitAddon.fit();
     }
   }
 
@@ -96,7 +96,7 @@ export class TerminalComponent implements OnChanges, AfterViewInit, OnDestroy {
     // we always load our token synchronously from local storage
     // for symplicity we are using type assertion to string here, avoiding to handle promises we're not expecting
     const token = this.jwtHelper.tokenGetter() as string;
-    this.socket = new WebSocket(
+        this.socket = new WebSocket(
       this.endpoint + '/shell/' + this.vmid + '/connect?auth=' + token,
     );
 

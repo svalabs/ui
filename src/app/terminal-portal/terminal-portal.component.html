@@ -1,7 +1,15 @@
+<app-terminal *ngIf="display"
+[vmname]="vmName"
+[vmid]="vmId"
+[endpoint]="endpoint"
+[DisplayOnPortal]="true"
+#terminalPortal 
+></app-terminal>
+<!-- 
 <app-terminal
 [vmname]="vmName"
 [vmid]="vmId"
 [endpoint]="'shell-i3-hb.sva.dev'"
 [DisplayOnPortal]="true"
 #terminalPortal
-></app-terminal>
+></app-terminal> -->

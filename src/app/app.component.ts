@@ -354,7 +354,6 @@ export class AppComponent implements OnInit {
     this.accesscodes.splice(acIndex, 1);
   }
 
-
   public doSaveSettings() {
     this.settingsService.update(this.settingsForm.value).subscribe({
       next: (_s: ServerResponse) => {
@@ -416,31 +415,36 @@ export class AppComponent implements OnInit {
   }
 
   public deleteAccessCodes() {
-    if (!this.selectedAccesscodesForDeletion || this.selectedAccesscodesForDeletion.length === 0) {
+    if (
+      !this.selectedAccesscodesForDeletion ||
+      this.selectedAccesscodesForDeletion.length === 0
+    ) {
       console.warn('No access codes selected for deletion.');
       return;
     }
-    this.userService.deleteAccessCodes(this.selectedAccesscodesForDeletion).subscribe({
-      next: (response) => {
-        console.log('Access codes deleted successfully:', response);
-        this.accessCodeSuccessAlert = `Access codes deleted successfully.`;
-        this.accessCodeSuccessClosed = false;
-        this.alertDeleteAccessCodeModal = false;
+    this.userService
+      .deleteAccessCodes(this.selectedAccesscodesForDeletion)
+      .subscribe({
+        next: (response) => {
+          console.log('Access codes deleted successfully:', response);
+          this.accessCodeSuccessAlert = `Access codes deleted successfully.`;
+          this.accessCodeSuccessClosed = false;
+          this.alertDeleteAccessCodeModal = false;
 
-        this.selectedAccesscodesForDeletion.forEach((code) => {
-          this._removeAccessCode(code);
-        });
+          this.selectedAccesscodesForDeletion.forEach((code) => {
+            this._removeAccessCode(code);
+          });
 
-        setTimeout(() => (this.accessCodeSuccessClosed = true), 2000);
-      },
-      error: (err) => {
-        console.error('Error deleting access codes:', err);
-        this.accessCodeDangerAlert = `Failed to delete access codes: ${err.message}`;
-        this.accessCodeDangerClosed = false;
-        this.alertDeleteAccessCodeModal = false;
-        setTimeout(() => (this.accessCodeDangerClosed = true), 8000);
-      },
-    });
+          setTimeout(() => (this.accessCodeSuccessClosed = true), 2000);
+        },
+        error: (err) => {
+          console.error('Error deleting access codes:', err);
+          this.accessCodeDangerAlert = `Failed to delete access codes: ${err.message}`;
+          this.accessCodeDangerClosed = false;
+          this.alertDeleteAccessCodeModal = false;
+          setTimeout(() => (this.accessCodeDangerClosed = true), 8000);
+        },
+      });
   }
 
   public enableDarkMode() {

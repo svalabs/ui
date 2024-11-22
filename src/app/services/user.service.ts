@@ -115,15 +115,17 @@ export class UserService {
   }
 
   public deleteAccessCodes(accessCodes: string[]) {
-    console.log(JSON.stringify(accessCodes))
-    return this.garg.delete('/accesscodes', {
-      body: JSON.stringify(accessCodes), 
-      headers: { 'Content-Type': 'application/json' }, 
-    }).pipe(
-      catchError((e: HttpErrorResponse) => {
-        return throwError(() => e.error);
-      }),
-      tap(() => this._acModified.next(true))
-    );
+    console.log(JSON.stringify(accessCodes));
+    return this.garg
+      .delete('/accesscodes', {
+        body: JSON.stringify(accessCodes),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .pipe(
+        catchError((e: HttpErrorResponse) => {
+          return throwError(() => e.error);
+        }),
+        tap(() => this._acModified.next(true)),
+      );
   }
 }

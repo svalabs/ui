@@ -354,26 +354,6 @@ export class AppComponent implements OnInit {
     this.accesscodes.splice(acIndex, 1);
   }
 
-  public deleteAccessCode(a: string): Promise<ServerResponse> {
-    // Wrap the observable in a Promise
-    return new Promise((resolve, reject) => {
-      this.userService.deleteAccessCode(a).subscribe({
-        next: (s: ServerResponse) => {
-          this.accessCodeSuccessAlert = s.message + ' deleted.';
-          this.accessCodeSuccessClosed = false;
-          this._removeAccessCode(a);
-          setTimeout(() => (this.accessCodeSuccessClosed = true), 2000);
-          resolve(s); // Resolve the Promise with the success response
-        },
-        error: (s: ServerResponse) => {
-          this.accessCodeDangerAlert = s.message;
-          this.accessCodeDangerClosed = false;
-          setTimeout(() => (this.accessCodeDangerClosed = true), 2000);
-          reject(s); // Reject the Promise with the error response
-        },
-      });
-    });
-  }
 
   public doSaveSettings() {
     this.settingsService.update(this.settingsForm.value).subscribe({
@@ -434,11 +414,33 @@ export class AppComponent implements OnInit {
   public accessCodeSelectedForDeletion(a: string[]) {
     this.selectedAccesscodesForDeletion = a;
   }
-  public async deleteAccessCodes() {
-    for (const element of this.selectedAccesscodesForDeletion) {
-      await this.deleteAccessCode(element);
+
+  public deleteAccessCodes() {
+    if (!this.selectedAccesscodesForDeletion || this.selectedAccesscodesForDeletion.length === 0) {
+      console.warn('No access codes selected for deletion.');
+      return;
     }
-    this.alertDeleteAccessCodeModal = false;
+    this.userService.deleteAccessCodes(this.selectedAccesscodesForDeletion).subscribe({
+      next: (response) => {
+        console.log('Access codes deleted successfully:', response);
+        this.accessCodeSuccessAlert = `Access codes deleted successfully.`;
+        this.accessCodeSuccessClosed = false;
+        this.alertDeleteAccessCodeModal = false;
+
+        this.selectedAccesscodesForDeletion.forEach((code) => {
+          this._removeAccessCode(code);
+        });
+
+        setTimeout(() => (this.accessCodeSuccessClosed = true), 2000);
+      },
+      error: (err) => {
+        console.error('Error deleting access codes:', err);
+        this.accessCodeDangerAlert = `Failed to delete access codes: ${err.message}`;
+        this.accessCodeDangerClosed = false;
+        this.alertDeleteAccessCodeModal = false;
+        setTimeout(() => (this.accessCodeDangerClosed = true), 8000);
+      },
+    });
   }
 
   public enableDarkMode() {

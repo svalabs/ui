@@ -5,7 +5,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { ClrModal } from '@clr/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from './services/user.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ServerResponse } from './ServerResponse';
 import { AppConfigService } from './app-config.service';
 import { SettingsService } from './services/settings.service';
@@ -27,12 +27,19 @@ export class AppComponent implements OnInit {
   public logoutModalOpened = false;
   public aboutModalOpened = false;
   public changePasswordModalOpened = false;
+  public deleteAccountModalOpened = false;
 
   public changePwDangerClosed = true;
   public changePwSuccessClosed = true;
 
   public changePwDangerAlert = '';
   public changePwSuccessAlert = '';
+
+  public deleteUserDangerClosed = true;
+  public deleteUserSuccessClosed = true;
+
+  public deleteUserDangerAlert = '';
+  public deleteUserSuccessAlert = '';
 
   public accessCodeDangerClosed = true;
   public accessCodeSuccessClosed = true;
@@ -103,6 +110,8 @@ export class AppComponent implements OnInit {
   @ViewChild('aboutmodal', { static: true }) aboutModal: ClrModal;
   @ViewChild('changepasswordmodal', { static: true })
   changePasswordModal: ClrModal;
+  @ViewChild('deleteaccountmodal', { static: true })
+  deleteAccountModal: ClrModal;
   @ViewChild('accesscodemodal', { static: true }) accessCodeModal: ClrModal;
   @ViewChild('settingsmodal', { static: true }) settingsModal: ClrModal;
 
@@ -115,12 +124,34 @@ export class AppComponent implements OnInit {
       new_password2: new FormControl<string | null>(null, [
         Validators.required,
       ]),
+    }
+  );
+
+public static deleteAccountFormValidator = (email: string): ValidatorFn => {
+    return (formGroup: AbstractControl ): ValidationErrors | null  => {
+      /* Check if the room name already exists */
+      let formEmail: string = formGroup.get('email')?.value;
+  
+      if (!formEmail) {
+        return { emailMissing: true}
+      }
+  
+      if (formEmail != email) {
+        return { emailMismatch: true };
+      }
+
+      return null;
+    }
+  }
+
+  public deleteAccountForm: FormGroup = new FormGroup(
+    {
+      email: new FormControl<string | null>(null, [Validators.required]),
     },
     {
-      validators: ({ value: { new_password1: pw1, new_password1: pw2 } }) =>
-        pw1 && pw1 == pw2 ? null : { passwordMismatch: true },
-    },
-  );
+      validators: AppComponent.deleteAccountFormValidator(this.email)
+    }
+);
 
   public newAccessCodeForm: FormGroup = new FormGroup({
     access_code: new FormControl<string | null>(null, [
@@ -228,6 +259,11 @@ export class AppComponent implements OnInit {
     const tok = this.helper.decodeToken(token);
     this.email = tok.email;
 
+    this.deleteAccountForm.clearValidators();
+    this.deleteAccountForm.addValidators(
+      AppComponent.deleteAccountFormValidator(this.email)
+    );
+    
     // Automatically logout the user after token expiration
     const timeout = tok.exp * 1000 - Date.now();
     setTimeout(() => this.doLogout(), timeout);
@@ -244,6 +280,11 @@ export class AppComponent implements OnInit {
   public changePassword() {
     this.passwordChangeForm.reset();
     this.changePasswordModal.open();
+  }
+
+  public openDeleteAccount() {
+    this.deleteAccountForm.reset();
+    this.deleteAccountModal.open();
   }
 
   public setAccessCode(ac: string) {
@@ -414,6 +455,21 @@ export class AppComponent implements OnInit {
         this.changePwDangerAlert = s.message;
         this.changePwDangerClosed = false;
         setTimeout(() => (this.changePwDangerClosed = true), 2000);
+      },
+    });
+  }
+
+  public doDeleteAccount() {
+    this.userService.deleteUser().subscribe({
+      next: (s: ServerResponse) => {
+        this.deleteUserSuccessAlert = 'Success. Logging you out...';
+        this.deleteUserSuccessClosed = false;
+        setTimeout(() => this.doLogout(), 2000);
+      },
+      error: (s: ServerResponse) => {
+        this.deleteUserDangerAlert = s.message;
+        this.deleteUserDangerClosed = false;
+        setTimeout(() => (this.deleteUserDangerClosed = true), 2000);
       },
     });
   }

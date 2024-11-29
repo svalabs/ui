@@ -66,6 +66,14 @@ export class UserService {
     );
   }
 
+  public deleteUser() {
+    return this.garg.get('/delete').pipe(
+      catchError((e: HttpErrorResponse) => {
+        return throwError(() => e.error);
+      }),
+    );
+  }
+
   public getScheduledEvents(
     force = false,
   ): Observable<Map<string, ScheduledEvent>> {

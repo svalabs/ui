@@ -270,12 +270,16 @@
             <clr-tab>
               <button clrTabLink>Account</button>
               <clr-tab-content *clrIfActive="true">
-                <clr-input-container>
-                  <label class="clr-col-md-4">Change Password</label>
-                </clr-input-container>
-                <clr-input-container>
-                  <label class="clr-col-md-4">Delete Account</label>
-                </clr-input-container>
+                <div class="clr-row space-top-big">
+                  <div class="clr-col">
+                    <button class="btn btn-sm">Change Password</button>
+                  </div>
+                </div>
+                <div class="clr-row space-top-small">
+                  <div class="clr-col">
+                    <button class="btn btn-danger btn-sm">Delete Account</button>
+                  </div>
+                </div>
               </clr-tab-content>
             </clr-tab>
             <clr-tab>

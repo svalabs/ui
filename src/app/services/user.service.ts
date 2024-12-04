@@ -7,6 +7,7 @@ import {
   GargantuaClientFactory,
 } from './gargantua.service';
 import { ScheduledEvent } from 'src/data/ScheduledEvent';
+import { ServerResponse } from '../ServerResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -61,6 +62,21 @@ export class UserService {
 
     return this.garg.post('/changepassword', params).pipe(
       catchError((e: HttpErrorResponse) => {
+        return throwError(() => e.error);
+      }),
+    );
+  }
+
+  public deleteAccount() {
+    return this.garg.get('/delete', { observe: 'response' }).pipe(
+      map((response) => {
+        if (response.status === 200) {
+          return { message: 'Account deleted successfully' } as ServerResponse;
+        }
+        throw new Error('Unexpected status code');
+      }),
+      catchError((e: HttpErrorResponse) => {
+        console.error('API Error:', e.message, e.status, e.error);
         return throwError(() => e.error);
       }),
     );

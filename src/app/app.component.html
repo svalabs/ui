@@ -269,12 +269,19 @@
               <clr-tab-content *clrIfActive="true">
                 <div class="clr-row space-top-big">
                   <div class="clr-col">
-                    <button class="btn btn-sm" (click)="changePassword()">Change Password</button>
+                    <button class="btn btn-sm" (click)="changePassword()">
+                      Change Password
+                    </button>
                   </div>
                 </div>
                 <div class="clr-row space-top-small">
                   <div class="clr-col">
-                    <button class="btn btn-danger btn-sm" (click)="deleteAccountModalOpened = true">Delete Account</button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      (click)="deleteAccountModalOpened = true"
+                    >
+                      Delete Account
+                    </button>
                   </div>
                 </div>
               </clr-tab-content>
@@ -695,9 +702,7 @@
   </clr-modal>
 
   <clr-modal #deleteaccountmodal [(clrModalOpen)]="deleteAccountModalOpened">
-    <h3 class="modal-title">
-      Are you sure you want to delete your account?
-    </h3>
+    <h3 class="modal-title">Are you sure you want to delete your account?</h3>
     <div class="modal-body">
       <div class="alert alert-danger">
         <div class="alert-items">
@@ -709,7 +714,7 @@
               ></cds-icon>
             </div>
             <span class="alert-text">
-              The account will be deleted permanently!
+              {{ deleteAccountDangerAlert }}
             </span>
           </div>
         </div>
@@ -728,7 +733,7 @@
         class="btn btn-danger-outline"
         (click)="deleteAccount()"
       >
-        Ok
+        Delete
       </button>
     </div>
   </clr-modal>

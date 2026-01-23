@@ -260,6 +260,7 @@ export function jwtOptionsFactory() {
     provideDynamicHooks({
       parsers: [
         { component: CtrComponent, unescapeStrings: false },
+        { component: CopyToClipboardComponent, unescapeStrings: false },
         { component: GlossaryMdComponent, unescapeStrings: false },
         { component: MermaidMdComponent, unescapeStrings: false },
         { component: HiddenMdComponent, unescapeStrings: false },
